@@ -12,7 +12,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])
+    ->middleware('throttle:login');
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
@@ -23,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::patch('/cart/items/{id}', [CartController::class, 'update']);
     Route::delete('/cart/items/{id}', [CartController::class, 'destroy']);
 
-    Route::post('/checkout', [CheckoutController::class, 'store']);
+    Route::post('/checkout', [CheckoutController::class, 'store'])
+        ->middleware('throttle:checkout');
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel']);
 });
