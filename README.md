@@ -134,6 +134,15 @@ The `promotion_code` field is optional. Prices, stock, discounts, and totals are
 * Migrations define database tables, foreign keys, uniqueness constraints, and relationships.
 * API authentication uses Laravel Sanctum bearer tokens.
 
+### API Rate Limiting
+
+Rate limits are applied to reduce repeated requests and help protect sensitive endpoints:
+
+- **Login:** 5 attempts per minute per email and IP combination.
+- **Checkout:** 10 requests per minute per authenticated user, falling back to IP for unauthenticated requests.
+
+Requests exceeding a configured limit receive HTTP `429 Too Many Requests`. Rate limiting helps reduce abuse but does not replace authentication, authorization, or other security controls.
+
 ### Database Indexing
 
 Added indexes to support common queries and reduce unnecessary row scans as the database grows:
