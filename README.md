@@ -134,6 +134,16 @@ The `promotion_code` field is optional. Prices, stock, discounts, and totals are
 * Migrations define database tables, foreign keys, uniqueness constraints, and relationships.
 * API authentication uses Laravel Sanctum bearer tokens.
 
+### Database Indexing
+
+Added indexes to support common queries and reduce unnecessary row scans as the database grows:
+
+- `orders.user_id`: supports retrieving orders belonging to a customer.
+- `order_items.order_id`: supports loading order items for a given order.
+- `promotion_usages(promotion_id, user_id)`: supports checking global and per-customer promotion usage.
+
+Existing primary keys, unique constraints, and other indexes are retained. Indexes improve read performance for matching queries but add storage and write-maintenance overhead, so additional indexes should be introduced based on actual query patterns and query-plan analysis.
+
 ## Checkout and data integrity
 
 Checkout runs inside a database transaction. It validates the cart and available inventory, recalculates prices, validates promotions, calculates totals, reduces stock, creates the order and order-item snapshots, records promotion usage, and clears the cart. A failure rolls back the transaction.
